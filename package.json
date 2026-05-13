@@ -1,6 +1,6 @@
 {
   "name": "nullmock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Zero-dependency, file-system based mock API server with smart data generation",
   "main": "src/utils.js",
   "bin": {

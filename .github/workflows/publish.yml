@@ -1,0 +1,32 @@
+name: NPM Auto Publish
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # This provides a 'Run workflow' button in GitHub for manual triggers
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    # ATTENTION: If you specified an Environment Name (e.g., 'production')
+    # in your NPM Trusted Publisher settings, uncomment the line below!
+    # environment: production
+
+    permissions:
+      contents: read
+      id-token: write # THIS IS THE NEXT-GEN SECURITY! (OIDC Technology)
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: npm publish --provenance --access public
