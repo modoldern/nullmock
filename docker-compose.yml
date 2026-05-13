@@ -1,0 +1,10 @@
+services:
+  core:
+    image: node:20-alpine
+    container_name: nullmock-engine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "4000:4000"
+    command: npm run start

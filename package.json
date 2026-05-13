@@ -1,0 +1,41 @@
+{
+  "name": "nullmock",
+  "version": "1.0.0",
+  "description": "Zero-dependency, file-system based mock API server with smart data generation",
+  "main": "src/utils.js",
+  "bin": {
+    "nullmock": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node --watch bin/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modoldern/nullmock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/modoldern/nullmock/issues"
+  },
+  "homepage": "https://github.com/modoldern/nullmock#readme",
+  "keywords": [
+    "mock",
+    "api",
+    "zero-dependency",
+    "cli",
+    "server",
+    "rest",
+    "testing",
+    "fake-data",
+    "json-server"
+  ],
+  "author": "modoldern",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/"
+  ]
+}
