@@ -89,6 +89,41 @@ Want to use your own data? Simply create a `tr.json` or `my_data.json` inside th
 
 ---
 
+## 🌐 Network Simulation (Delay & Errors)
+
+Test your frontend's loading states and error handling easily. You can simulate network latency and HTTP status codes in two ways:
+
+**1. Via URL Parameters (Dynamic Test)**
+No need to change your mock files! Just append parameters to your fetch URL:
+- Test loading states: `/api/users?_delay=2000` (Waits 2 seconds)
+- Test unauthorized access: `/api/users?_status=401`
+- Combine them: `/api/users?_delay=1000&_status=500`
+
+**2. Via JSON Configuration (Permanent)**
+Add `_delay` and `_status` directly inside your JSON file. Nullmock will apply them and clean them up before sending the response to the client:
+```json
+{
+  "_status": 404,
+  "_delay": 1500,
+  "error": "User not found"
+}
+```
+
+---
+
+## 🔢 Smart Number Ranges
+
+Need random numbers within a specific range for prices, ages, or wallet balances? Use the `{{number:min-max}}` tag anywhere in your strings!
+
+```json
+{
+  "price": "{{number:10-500}}",
+  "age": "{{number:18-65}}"
+}
+```
+
+---
+
 ## 🧠 Using Nullmock as a Library (Import)
 
 You don't have to use Nullmock as a server. You can import its powerful generation engine directly into your backend scripts, tests, or seeders!

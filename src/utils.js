@@ -59,21 +59,29 @@ function getRandomFromLocale(category, lang = "en") {
 function processString(str, params) {
   if (typeof str !== "string") return str;
 
+  // 1. Smart Number Range Engine (e.g. "{{number:10-500}}" -> returns real Number)
+  const numMatch = str.match(/^\{\{number:(\d+)-(\d+)\}\}$/);
+  if (numMatch) {
+    const min = parseInt(numMatch[1], 10);
+    const max = parseInt(numMatch[2], 10);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   let replacedStr = str;
 
-  // 1. Direct Parameter Injection (e.g. "{{id}}" -> 60)
+  // 2. Direct Parameter Injection (e.g. "{{id}}" -> 60)
   for (const [pKey, pVal] of Object.entries(params)) {
     if (replacedStr === `{{${pKey}}}`) {
       return isNaN(pVal) ? pVal : Number(pVal);
     }
   }
 
-  // 2. Inline Parameter Replacement (e.g. "Url: /user/{{id}}")
+  // 3. Inline Parameter Replacement (e.g. "Url: /user/{{id}}")
   for (const [pKey, pVal] of Object.entries(params)) {
     replacedStr = replacedStr.split(`{{${pKey}}}`).join(pVal);
   }
 
-  // 3. Dictionary Tag Replacement (e.g. "{{firstName:tr}}" or "{{city:az}}")
+  // 4. Dictionary Tag Replacement (e.g. "{{firstName:tr}}" or "{{city:az}}")
   const dictRegex = /\{\{([a-zA-Z]+)(?::([a-zA-Z]{2}))?\}\}/g;
 
   replacedStr = replacedStr.replace(dictRegex, (match, category, lang) => {

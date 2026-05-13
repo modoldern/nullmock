@@ -89,6 +89,41 @@ Kendi verilerinizi mi kullanmak istiyorsunuz? Sadece `mocks/locales/` klasörü 
 
 ---
 
+## 🌐 Ağ Simülasyonu (Gecikme ve Hatalar)
+
+Frontend uygulamanızın yüklenme (loading) durumlarını ve hata yönetimini kolayca test edin. Ağ gecikmesini ve HTTP durum kodlarını iki şekilde simüle edebilirsiniz:
+
+**1. URL Parametreleri ile (Dinamik Test)**
+Mock dosyalarınızı değiştirmenize gerek yok! Sadece fetch URL'nize parametre ekleyin:
+- Yüklenme ekranını test edin: `/api/users?_delay=2000` (2 saniye bekler)
+- Yetkisiz girişi test edin: `/api/users?_status=401`
+- İkisini birleştirin: `/api/users?_delay=1000&_status=500`
+
+**2. JSON Yapılandırması ile (Kalıcı)**
+`_delay` ve `_status` anahtarlarını doğrudan JSON dosyanızın içine ekleyin. Nullmock bunları uygulayacak ve istemciye (client) yanıt göndermeden önce temizleyecektir:
+```json
+{
+  "_status": 404,
+  "_delay": 1500,
+  "error": "Kullanıcı bulunamadı"
+}
+```
+
+---
+
+## 🔢 Akıllı Sayı Aralıkları
+
+Fiyatlar, yaşlar veya cüzdan bakiyeleri için belirli bir aralıkta rastgele sayılara mı ihtiyacınız var? String (metin) değerlerinizde herhangi bir yere `{{number:min-max}}` etiketini eklemeniz yeterli!
+
+```json
+{
+  "price": "{{number:10-500}}",
+  "age": "{{number:18-65}}"
+}
+```
+
+---
+
 ## 🧠 Nullmock'u Kütüphane Olarak Kullanmak (Import)
 
 Nullmock'u bir sunucu olarak kullanmak zorunda değilsiniz. Güçlü üretim motorunu doğrudan backend betiklerinize, testlerinize veya seeder'larınıza import edebilirsiniz!

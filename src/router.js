@@ -54,16 +54,48 @@ module.exports = (req, res) => {
     try {
       const { deepScanAndRepeat } = require("./utils");
       const fileContent = fs.readFileSync(matchedRoute.file, "utf-8");
-      const parsedJson = JSON.parse(fileContent);
+      let parsedJson = JSON.parse(fileContent);
+
+      // === NETWORK SIMULATION (Status & Delay) ===
+      // 1. Extract from URL (e.g. ?_status=404&_delay=2000)
+      const queryStatus = parseInt(parsedUrl.query._status, 10);
+      const queryDelay = parseInt(parsedUrl.query._delay, 10);
+
+      let statusCode = queryStatus || 200;
+      let delayMs = queryDelay || 0;
+
+      // 2. Extract from JSON config (if present)
+      if (parsedJson && typeof parsedJson === 'object' && !Array.isArray(parsedJson)) {
+        if (parsedJson._status) {
+          statusCode = queryStatus || parsedJson._status; // URL always overrides file config
+          delete parsedJson._status; // Clean up before sending to client
+        }
+        if (parsedJson._delay) {
+          delayMs = queryDelay || parsedJson._delay; // URL always overrides file config
+          delete parsedJson._delay; // Clean up before sending to client
+        }
+      }
 
       // Merge dynamic route params ([id]) with query params (?page=2)
-      const allParams = { ...parsedUrl.query, ...matchedRoute.params };
+      // Exclude _status and _delay from the engine parameters
+      const { _status, _delay, ...cleanQueryParams } = parsedUrl.query;
+      const allParams = { ...cleanQueryParams, ...matchedRoute.params };
 
       // Pass the parsed JSON and parameters to our generation engine
       const finalData = deepScanAndRepeat(parsedJson, allParams);
 
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(finalData));
+      const sendResponse = () => {
+        res.writeHead(statusCode, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(finalData));
+      };
+
+      // Apply simulated network delay
+      if (delayMs > 0) {
+        setTimeout(sendResponse, delayMs);
+      } else {
+        sendResponse();
+      }
+
     } catch (error) {
       res.writeHead(500, { "Content-Type": "application/json" });
       res.end(
